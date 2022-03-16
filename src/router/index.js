@@ -1,61 +1,116 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '/src/views/Home.vue'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import Style from '@/views/Style.vue'
+import Home from '@/views/Home.vue'
 
 const routes = [
     {
+        meta: {
+            title: 'Select style',
+            fullScreen: true,
+        },
         path: '/',
-        redirect: '/dashboard',
-        //component: DefaultLayout,
-        meta: { requiresAuth: true },
-        children: [
-            //{ path: '/dashboard', name: 'Dashboard', component: Dashboard },
-        ],
-    },
-    // {
-    //   path: "/",
-    //   name: 'Home',
-    //   component: Home
-    // },
-    {
-        path: '/auth',
-        redirect: '/login',
-        name: 'Auth',
-        //component: AuthLayout,
-        meta: { isGuest: true },
-        children: [
-            // {
-            //     path: '/login',
-            //     name: 'Login',
-            //     component: Login,
-            // },
-            // {
-            //     path: '/register',
-            //     name: 'Register',
-            //     component: Register,
-            // },
-        ],
+        name: 'style',
+        component: Style,
     },
     {
-        path: '/404',
-        name: 'NotFound',
-        // component: NotFound,
+        // Document title tag
+        // We combine it with defaultDocumentTitle set in `src/main.js` on router.afterEach hook
+        meta: {
+            title: 'Dashboard',
+        },
+        path: '/dashboard',
+        name: 'dashboard',
+        component: Home,
+    },
+    {
+        meta: {
+            title: 'Tables',
+        },
+        path: '/tables',
+        name: 'tables',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () =>
+            import(/* webpackChunkName: "tables" */ '@/views/Tables.vue'),
+    },
+    {
+        meta: {
+            title: 'Forms',
+        },
+        path: '/forms',
+        name: 'forms',
+        component: () =>
+            import(/* webpackChunkName: "forms" */ '@/views/Forms.vue'),
+    },
+    {
+        meta: {
+            title: 'Profile',
+        },
+        path: '/profile',
+        name: 'profile',
+        component: () =>
+            import(/* webpackChunkName: "profile" */ '@/views/Profile.vue'),
+    },
+    {
+        meta: {
+            title: 'Ui',
+        },
+        path: '/ui',
+        name: 'ui',
+        component: () => import(/* webpackChunkName: "ui" */ '@/views/Ui.vue'),
+    },
+    {
+        meta: {
+            title: 'Responsive layout',
+        },
+        path: '/responsive',
+        name: 'responsive',
+        component: () =>
+            import(
+                /* webpackChunkName: "responsive" */ '@/views/Responsive.vue'
+            ),
+    },
+    {
+        meta: {
+            title: 'Login',
+            fullScreen: true,
+        },
+        path: '/login',
+        name: 'login',
+        component: () =>
+            import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
+    },
+    {
+        meta: {
+            title: 'Error',
+            fullScreen: true,
+        },
+        path: '/error',
+        name: 'error',
+        component: () =>
+            import(/* webpackChunkName: "error" */ '@/views/Error.vue'),
     },
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
+    scrollBehavior(to, from, savedPosition) {
+        return savedPosition || { top: 0 }
+    },
 })
 
-router.beforeEach((to, from, next) => {
-    let user = JSON.parse(localStorage.getItem('user'))
+// router.beforeEach((to, from, next) => {
+//     let user = JSON.parse(localStorage.getItem('user'))
 
-    if (to.meta.requiresAuth && !user) {
-        next({ name: 'Login' })
-    } else if (user && to.meta.isGuest) {
-        next({ name: 'Dashboard' })
-    } else {
-        next()
-    }
-})
+//     if (to.meta.requiresAuth && !user) {
+//         next({ name: 'Login' })
+//     } else if (user && to.meta.isGuest) {
+//         next({ name: 'Dashboard' })
+//     } else {
+//         next()
+//     }
+// })
+
 export default router
